@@ -46,7 +46,7 @@ class Data {
   int limit;
   int total;
   int count;
-  List<Results> results;
+  List<Character> results;
 
   Data({this.offset, this.limit, this.total, this.count, this.results});
 
@@ -56,9 +56,9 @@ class Data {
     total = json['total'];
     count = json['count'];
     if (json['results'] != null) {
-      results = new List<Results>();
+      results = new List<Character>();
       json['results'].forEach((v) {
-        results.add(new Results.fromJson(v));
+        results.add(new Character.fromJson(v));
       });
     }
   }
@@ -76,33 +76,25 @@ class Data {
   }
 }
 
-class Results {
+class Character {
   int id;
   String name;
   String description;
   String modified;
   Thumbnail thumbnail;
   String resourceURI;
-  Comics comics;
-  Comics series;
-  Comics stories;
-  Comics events;
   List<Urls> urls;
 
-  Results(
+  Character(
       {this.id,
       this.name,
       this.description,
       this.modified,
       this.thumbnail,
       this.resourceURI,
-      this.comics,
-      this.series,
-      this.stories,
-      this.events,
       this.urls});
 
-  Results.fromJson(Map<String, dynamic> json) {
+  Character.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];
@@ -111,14 +103,6 @@ class Results {
         ? new Thumbnail.fromJson(json['thumbnail'])
         : null;
     resourceURI = json['resourceURI'];
-    comics =
-        json['comics'] != null ? new Comics.fromJson(json['comics']) : null;
-    series =
-        json['series'] != null ? new Comics.fromJson(json['series']) : null;
-    stories =
-        json['stories'] != null ? new Comics.fromJson(json['stories']) : null;
-    events =
-        json['events'] != null ? new Comics.fromJson(json['events']) : null;
     if (json['urls'] != null) {
       urls = new List<Urls>();
       json['urls'].forEach((v) {
@@ -137,18 +121,6 @@ class Results {
       data['thumbnail'] = this.thumbnail.toJson();
     }
     data['resourceURI'] = this.resourceURI;
-    if (this.comics != null) {
-      data['comics'] = this.comics.toJson();
-    }
-    if (this.series != null) {
-      data['series'] = this.series.toJson();
-    }
-    if (this.stories != null) {
-      data['stories'] = this.stories.toJson();
-    }
-    if (this.events != null) {
-      data['events'] = this.events.toJson();
-    }
     if (this.urls != null) {
       data['urls'] = this.urls.map((v) => v.toJson()).toList();
     }
@@ -171,38 +143,6 @@ class Thumbnail {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['path'] = this.path;
     data['extension'] = this.extension;
-    return data;
-  }
-}
-
-class Comics {
-  int available;
-  String collectionURI;
-  List<Items> items;
-  int returned;
-
-  Comics({this.available, this.collectionURI, this.items, this.returned});
-
-  Comics.fromJson(Map<String, dynamic> json) {
-    available = json['available'];
-    collectionURI = json['collectionURI'];
-    if (json['items'] != null) {
-      items = new List<Items>();
-      json['items'].forEach((v) {
-        items.add(new Items.fromJson(v));
-      });
-    }
-    returned = json['returned'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['available'] = this.available;
-    data['collectionURI'] = this.collectionURI;
-    if (this.items != null) {
-      data['items'] = this.items.map((v) => v.toJson()).toList();
-    }
-    data['returned'] = this.returned;
     return data;
   }
 }

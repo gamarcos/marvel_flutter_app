@@ -1,82 +1,74 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:marvelflutterapp/model/characters_model.dart';
-import 'package:marvelflutterapp/pages/detail_character_page.dart';
 
 class CharacterListTile extends StatelessWidget {
-  final Results character;
+  final String thumb;
+  final String title;
+  final Function onPress;
 
-  CharacterListTile(this.character);
+  CharacterListTile({this.thumb, this.title, this.onPress});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: _builderCard(),
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context)=>DetailCharacterPage(character))
-        );
-      },
+      onTap: onPress,
     );
   }
 
   Widget _builderCard() {
-    return Center(
+    return Container(
       child: SizedBox(
-        width: 250,
-        height: 325,
-        child: Container(
-          margin: EdgeInsets.only(left: 10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Color.fromARGB(30, 0, 0, 0),
-                    offset: Offset(0.0, 10.0),
-                    spreadRadius: 0,
-                    blurRadius: 10)
-              ]),
-          child: Card(
-              elevation: 0,
-              clipBehavior: Clip.antiAlias,
-              child: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  _builderBackgroundImage(),
-                  Column(
-                    children: <Widget>[
-                      Container(margin: EdgeInsets.only(top: 10)),
-                      Expanded(child: Container()),
-                      _builderTitle()
-                    ],
-                  )
-                ],
-              ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
-        ),
+        width: 200,
+        height: 250,
+        child: Wrap(
+          children: <Widget>[
+            Container(
+              height: 250,
+              margin: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Color.fromARGB(30, 0, 0, 0),
+                        offset: Offset(0.0, 10.0),
+                        spreadRadius: 0,
+                        blurRadius: 10)
+                  ]),
+              child: Card(
+                  elevation: 0,
+                  clipBehavior: Clip.antiAlias,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: <Widget>[_builderBackgroundImage(),],
+                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+            ),
+            _builderTitle()
+          ],
+        )
       ),
     );
   }
 
   Widget _builderBackgroundImage() {
     return Hero(
-      child: Image(
-        image: NetworkImage('${character.thumbnail.path}.'
-            '${character.thumbnail.extension}'),
-        fit: BoxFit.cover,
-      ),
-      tag: character.name,
-    );
+        tag: title,
+        child: Container(
+            child: Image(
+              image: NetworkImage(thumb),
+              fit: BoxFit.cover,
+            )));
   }
 
   Widget _builderTitle() {
     return Container(
-      alignment: Alignment.bottomLeft,
-      margin: EdgeInsets.only(bottom: 20, left: 20),
+      width: 180,
+      margin: EdgeInsets.only(right: 8, left: 8),
       child: Text(
-        character.name,
-        style: TextStyle(color: Colors.white, fontSize: 30),
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.white),
       ),
     );
   }

@@ -1,26 +1,41 @@
 import 'dart:convert';
 
-import 'package:marvelflutterapp/model/characters_model.dart';
-
 import 'package:http/http.dart' as http;
-
-const URL = "https://gateway.marvel.com/v1/public";
-const MARVEL_TS = "1583639417331";
-const MARVEL_PUBLIC_KEY = "cf9174bc5ca57759cbb0b9adaa84e82d";
-const MARVEL_HASH = "bff0a37f883b38011773da65f8dfcb6d";
+import 'package:marvelflutterapp/model/characters_model.dart';
+import 'package:marvelflutterapp/model/comics_model.dart';
+import 'package:marvelflutterapp/security/secret.dart';
+import 'package:marvelflutterapp/security/secret_loader.dart';
 
 class Api {
+  Future<Secret> getKeys() async { return await SecretLoader(secretPath: "lib/security/security.json").load(); }
+
   Future<Characters> getAllCharacters(int page) async {
+    var keys = await getKeys();
     http.Response response = await http.get(
-        '$URL/characters?ts=$MARVEL_TS&apikey=$MARVEL_PUBLIC_KEY&hash=$MARVEL_HASH&offset=$page&limit=20');
-    print(response.body);
-    return decode(response);
+        '${keys.url}/characters?ts=${keys.timeStamp}&apikey=${keys.publicKey}&hash=${keys.hash}&offset=$page&limit=20');
+    return charactersDecode(response);
   }
 
-  Characters decode(http.Response response) {
+  Future<ComicsResponse> getComics(String id) async {
+    var keys = await getKeys();
+    http.Response response = await http.get(
+        '${keys.url}/characters/$id/comics?ts=${keys.timeStamp}&apikey=${keys.publicKey}&hash=${keys.hash}');
+    return comicsDecode(response);
+  }
+
+  Characters charactersDecode(http.Response response) {
     if (response.statusCode == 200) {
       var result = json.decode(response.body);
       return Characters.fromJson(result);
+    } else {
+      throw Exception();
+    }
+  }
+
+  ComicsResponse comicsDecode(http.Response response) {
+    if (response.statusCode == 200) {
+      var result = json.decode(response.body);
+      return ComicsResponse.fromJson(result);
     } else {
       throw Exception();
     }
