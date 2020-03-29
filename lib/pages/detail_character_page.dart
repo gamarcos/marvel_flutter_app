@@ -4,9 +4,8 @@ import 'package:marvelflutterapp/bloc/search_character_bloc.dart';
 import 'package:marvelflutterapp/model/characters_model.dart';
 import 'package:marvelflutterapp/widgets/character_list_tile.dart';
 
-// ignore: must_be_immutable
 class DetailCharacterPage extends StatelessWidget {
-  Character _character;
+  final Character _character;
 
   DetailCharacterPage(this._character);
 
@@ -24,8 +23,7 @@ class DetailCharacterPage extends StatelessWidget {
                 tileMode: TileMode.clamp)),
         child: Scaffold(
             backgroundColor: Colors.transparent,
-            body: Container(
-                child: SingleChildScrollView(
+            body: Container(child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   Stack(
@@ -43,12 +41,28 @@ class DetailCharacterPage extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(30.0),
                             child: Hero(
-                              child:
-                                  Image.network('${_character.thumbnail.path}.'
+                                tag: _character.name,
+                                child: Image(
+                                  image: NetworkImage(
+                                      '${_character.thumbnail.path}.'
                                       '${_character.thumbnail.extension}'),
-                              tag: _character.name,
-                            ),
-                          ))
+                                  fit: BoxFit.cover,
+                                )),
+                          )),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 40.0),
+                        child: Row(
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              iconSize: 30.0,
+                              color: Colors.black,
+                              onPressed: () => Navigator.pop(context),
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                   Column(
@@ -78,7 +92,7 @@ class DetailCharacterPage extends StatelessWidget {
                       ),
                       Container(
                         alignment: Alignment.topLeft,
-                        margin: EdgeInsets.all(16.0),
+                        margin: EdgeInsets.only(left: 16.0),
                         child: Text("Comics",
                             style: TextStyle(
                                 fontSize: 16,
@@ -98,8 +112,7 @@ class DetailCharacterPage extends StatelessWidget {
                                   itemBuilder: (_, int index) {
                                     return CharacterListTile(
                                       title: snapshot.data[index].title,
-                                      thumb:
-                                          '${snapshot.data[index].thumbnail.path}.${snapshot.data[index].thumbnail.extension}',
+                                      thumb: '${snapshot.data[index].thumbnail.path}.${snapshot.data[index].thumbnail.extension}',
                                     );
                                   },
                                 );
